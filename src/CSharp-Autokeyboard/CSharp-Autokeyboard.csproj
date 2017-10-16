@@ -7,8 +7,8 @@
     <ProjectGuid>{136651BB-301D-4FBC-A099-14C8566AE5D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>app_window_title_changer</RootNamespace>
-    <AssemblyName>app_window_title_changer</AssemblyName>
+    <RootNamespace>CSharpAutokeyboard</RootNamespace>
+    <AssemblyName>CSharp-Autokeyboard</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -73,6 +73,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
