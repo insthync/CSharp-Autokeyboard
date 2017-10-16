@@ -71,7 +71,7 @@ namespace CSharpAutokeyboard
             var result = new KeyDataEntry();
             result.enabled = Convert.ToBoolean(row.Cells[0].Value);
             result.keys = Convert.ToString(row.Cells[1].Value);
-            result.repeatKeys = Convert.ToInt32(row.Cells[2].Value);
+            result.flood = Convert.ToInt32(row.Cells[2].Value);
             result.delay = Convert.ToInt32(row.Cells[3].Value);
             result.repeat = Convert.ToInt32(row.Cells[4].Value);
             return result;
@@ -106,7 +106,7 @@ namespace CSharpAutokeyboard
                     IncreaseUpdateIndex();
                     return;
                 }
-                if (repeatKeysCount < keyDataEntry.repeatKeys)
+                if (repeatKeysCount < keyDataEntry.flood)
                 {
                     ++repeatKeysCount;
                     IntPtr windowPtr = runningWindow.MainWindowHandle;
@@ -130,7 +130,7 @@ namespace CSharpAutokeyboard
                         return;
                     }
                     var differenceTicks = currentTicks - delayStartTime;
-                    if (differenceTicks / TimeSpan.TicksPerSecond >= keyDataEntry.delay)
+                    if (differenceTicks / TimeSpan.TicksPerMillisecond >= keyDataEntry.delay)
                     {
                         Console.WriteLine("Delay ended at " + currentTicks + " difference ticks " + differenceTicks);
                         ++repeatCount;
@@ -242,7 +242,7 @@ namespace CSharpAutokeyboard
                         var newEntry = new KeyDataEntry();
                         newEntry.enabled = Convert.ToBoolean(row.Cells[0].Value);
                         newEntry.keys = Convert.ToString(row.Cells[1].Value);
-                        newEntry.repeatKeys = Convert.ToInt32(row.Cells[2].Value);
+                        newEntry.flood = Convert.ToInt32(row.Cells[2].Value);
                         newEntry.delay = Convert.ToInt32(row.Cells[3].Value);
                         newEntry.repeat = Convert.ToInt32(row.Cells[4].Value);
                         entries.Add(newEntry);
@@ -274,7 +274,7 @@ namespace CSharpAutokeyboard
                         var newData = new DataGridViewRow();
                         gvKeyList.Rows.Add(entry.enabled, 
                             entry.keys, 
-                            entry.repeatKeys.ToString(), 
+                            entry.flood.ToString(), 
                             entry.delay.ToString(),
                             entry.repeat.ToString());
                     }

@@ -11,7 +11,7 @@ namespace CSharpAutokeyboard
     {
         public bool enabled;
         public string keys;
-        public int repeatKeys;
+        public int flood;
         public int delay;
         public int repeat;
     }

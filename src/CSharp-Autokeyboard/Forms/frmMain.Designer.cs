@@ -40,7 +40,7 @@
             this.gvKeyList = new System.Windows.Forms.DataGridView();
             this.enabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.keys = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.repeatKeys = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flood = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.delay = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.repeat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gvKeyList)).BeginInit();
@@ -122,7 +122,7 @@
             this.gvKeyList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.enabled,
             this.keys,
-            this.repeatKeys,
+            this.flood,
             this.delay,
             this.repeat});
             this.gvKeyList.Location = new System.Drawing.Point(14, 117);
@@ -142,14 +142,14 @@
             this.keys.HeaderText = "Keys";
             this.keys.Name = "keys";
             // 
-            // repeatKeys
+            // flood
             // 
-            this.repeatKeys.HeaderText = "Repeat Keys";
-            this.repeatKeys.Name = "repeatKeys";
+            this.flood.HeaderText = "Flood";
+            this.flood.Name = "flood";
             // 
             // delay
             // 
-            this.delay.HeaderText = "Delay";
+            this.delay.HeaderText = "Delay (ms)";
             this.delay.Name = "delay";
             // 
             // repeat
@@ -191,7 +191,7 @@
         private System.Windows.Forms.DataGridView gvKeyList;
         private System.Windows.Forms.DataGridViewCheckBoxColumn enabled;
         private System.Windows.Forms.DataGridViewTextBoxColumn keys;
-        private System.Windows.Forms.DataGridViewTextBoxColumn repeatKeys;
+        private System.Windows.Forms.DataGridViewTextBoxColumn flood;
         private System.Windows.Forms.DataGridViewTextBoxColumn delay;
         private System.Windows.Forms.DataGridViewTextBoxColumn repeat;
     }
