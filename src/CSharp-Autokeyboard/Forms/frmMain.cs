@@ -80,7 +80,7 @@ namespace CSharpAutokeyboard
 
             if (!isRunning)
                 return;
-            
+
             var keyDataEntry = GetKeyDataEntry(currentIndex);
             if (runningWindow != null && keyDataEntry != null)
             {
@@ -115,6 +115,12 @@ namespace CSharpAutokeyboard
                         {
                             Console.WriteLine("Repeated " + repeatCount);
                             IncreaseUpdateIndex();
+                        }
+                        else
+                        {
+                            repeatKeysCount = 0;
+                            delayStartTime = 0;
+                            startDelayCount = false;
                         }
                     }
                 }
