@@ -6,15 +6,21 @@ using System.Reflection;
 using System.Windows.Forms;
 using LitJson;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Collections.ObjectModel;
 
 namespace CSharpAutokeyboard
 {
     public partial class frmMain : Form
     {
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        // Refs
+        // https://msdn.microsoft.com/en-us/library/ms644950(VS.85).aspx
+        // 
+        private const int WM_SETTEXT = 0x000C;
+        [DllImport("User32.dll")]
+        private static extern Int32 SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
 
-        public readonly List<Window> windowList = new List<Window>();
+        private List<Window> windowList = null;
         private Window selectedWindow = null;
         private Window runningWindow = null;
         private Timer updateTimer = new Timer();
@@ -78,13 +84,15 @@ namespace CSharpAutokeyboard
             }
             dirtyIsRunning = isRunning;
 
+            btnStart.Enabled = !isRunning;
+            btnStop.Enabled = isRunning;
+
             if (!isRunning)
                 return;
 
             var keyDataEntry = GetKeyDataEntry(currentIndex);
             if (runningWindow != null && keyDataEntry != null)
             {
-                SetForegroundWindow(runningWindow.Process.Handle);
                 if (!keyDataEntry.enabled)
                 {
                     IncreaseUpdateIndex();
@@ -93,7 +101,7 @@ namespace CSharpAutokeyboard
                 if (repeatKeysCount < keyDataEntry.repeatKeys)
                 {
                     ++repeatKeysCount;
-                    SendKeys.Send(keyDataEntry.keys);
+                    SendMessage(runningWindow.MainWindowHandle, WM_SETTEXT, IntPtr.Zero, new StringBuilder(keyDataEntry.keys));
                     Console.WriteLine("Send Keys " + keyDataEntry.keys + " count " + repeatKeysCount);
                 }
                 else
@@ -127,11 +135,12 @@ namespace CSharpAutokeyboard
             }
         }
 
-        private void UpdateWindowsList()
+        private void RefreshWindowsList()
         {
-            int selected_index = lstWindows.SelectedIndex;
+            Console.WriteLine("RefreshWindowsList");
+            int selectedIndex = lstWindows.SelectedIndex;
 
-            windowList.Clear();
+            List<Window> windowList = new List<Window>();
             Process[] processes = Process.GetProcesses();
             foreach (Process proc in processes)
             {
@@ -141,31 +150,27 @@ namespace CSharpAutokeyboard
                 if (string.IsNullOrEmpty(proc.MainWindowTitle) || string.IsNullOrWhiteSpace(proc.MainWindowTitle))
                     continue;
 
-                windowList.Add(
-                    new Window(proc)
-                );
+                windowList.Add(new Window(proc));
             }
 
             lstWindows.DataSource = windowList;
             lstWindows.DisplayMember = "MainWindowTitle";
-
-            lstWindows.SelectedIndex = selected_index;
+            lstWindows.SelectedIndex = selectedIndex;
+            this.windowList = windowList;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            UpdateWindowsList();
-        }
-
-        private void tmrRefreshWindowList_Tick(object sender, EventArgs e)
-        {
-            UpdateWindowsList();
+            RefreshWindowsList();
         }
 
         private void lstWindows_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstWindows.SelectedIndex < 0 || windowList == null)
+            if (lstWindows.SelectedIndex < 0 || windowList == null || windowList.Count == 0)
+            {
+                selectedWindow = null;
                 return;
+            }
 
             selectedWindow = windowList[lstWindows.SelectedIndex];
         }
@@ -268,7 +273,7 @@ namespace CSharpAutokeyboard
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            UpdateWindowsList();
+            RefreshWindowsList();
         }
     }
 }

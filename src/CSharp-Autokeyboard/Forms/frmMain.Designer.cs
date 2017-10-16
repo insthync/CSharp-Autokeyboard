@@ -72,7 +72,6 @@
             // 
             this.tmrRefreshWindowList.Enabled = true;
             this.tmrRefreshWindowList.Interval = 500;
-            this.tmrRefreshWindowList.Tick += new System.EventHandler(this.tmrRefreshWindowList_Tick);
             // 
             // btnStart
             // 
