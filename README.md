@@ -16,9 +16,9 @@ A Simple auto keyboard which will focus on selected application then add input a
 {DOWN} - to send Down arrow input
 {LEFT} - to send Left arrow input
 {RIGHT} - to send Right arrow input
-+ - to send Shift input
-^ - to send Ctrl input
-% - to send Alt input
+`+` - to send Shift input
+`^` - to send Ctrl input
+`%` - to send Alt input
 
 For games I think input above are enough
 But there are more keys you can see it here : https://msdn.microsoft.com/en-us/library/system.windows.forms.sendkeys.send(v=vs.110).aspx
