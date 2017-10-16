@@ -11,7 +11,7 @@ A Simple auto keyboard which will focus on selected application then add input a
 
 ##Another keys
 {ENTER} - to send Enter button input
-{F1}~{F12} - to send F1~F12 input
+{F1}...{F12} - to send F1...F12 input
 {UP} - to send Up arrow input
 {DOWN} - to send Down arrow input
 {LEFT} - to send Left arrow input
