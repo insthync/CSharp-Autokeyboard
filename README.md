@@ -2,14 +2,14 @@
 
 A Simple auto keyboard which will focus on selected application then add input as you set
 
-##Each row you can set:
+## Each row you can set:
 * enabled? : if you are not checked, this row will not run
 * keys: inputs you want to send to selected application
 * flood: time to flood inputs
 * delay: delay in milliseconds before next input
 * repeat: input repeat
 
-##Another keys
+## Another keys
 * `{ENTER}` - to send Enter button input
 * `{F1}`...`{F12}` - to send F1...F12 input
 * `{UP}` - to send Up arrow input
