@@ -5,7 +5,7 @@ A Simple auto keyboard which will focus on selected application then add input a
 ##Each row you can set:
 - enabled? : if you are not checked, this row will not run
 - keys: inputs you want to send to selected application
-- flood: time to flushes inputs
+- flood: time to flood inputs
 - delay: delay in milliseconds before next input
 - repeat: input repeat
 
