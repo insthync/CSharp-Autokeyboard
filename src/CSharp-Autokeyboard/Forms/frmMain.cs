@@ -4,16 +4,121 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using LitJson;
+using System.Runtime.InteropServices;
 
 namespace CSharpAutokeyboard
 {
     public partial class frmMain : Form
     {
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         public readonly List<Window> windowList = new List<Window>();
+        private Window selectedWindow = null;
+        private Window runningWindow = null;
+        private Timer updateTimer = new Timer();
+        private bool isRunning = false;
+        private bool dirtyIsRunning = false;
+        private int currentIndex;
+        private int repeatKeysCount = 0;
+        private bool startDelayCount = false;
+        private long delayStartTime = 0;
+        private int repeatCount = 0;
 
         public frmMain()
         {
             InitializeComponent();
+            updateTimer.Interval = 50;  // 50 ms
+            updateTimer.Tick += new EventHandler(UpdateLogic);
+            updateTimer.Start();
+        }
+
+        private void ResetUpdateStates()
+        {
+            currentIndex = 0;
+            repeatKeysCount = 0;
+            startDelayCount = false;
+            delayStartTime = 0;
+            repeatCount = 0;
+        }
+
+        private void IncreaseUpdateIndex()
+        {
+            ++currentIndex;
+            repeatKeysCount = 0;
+            startDelayCount = false;
+            delayStartTime = 0;
+            repeatCount = 0;
+            if (currentIndex >= gvKeyList.RowCount - 1)
+                currentIndex = 0;
+        }
+
+        private KeyDataEntry GetKeyDataEntry(int index)
+        {
+            // Skip last row it's always empty
+            if (index < 0 || index >= gvKeyList.RowCount - 1)
+                return null;
+            var row = gvKeyList.Rows[index];
+            var result = new KeyDataEntry();
+            result.enabled = Convert.ToBoolean(row.Cells[0].Value);
+            result.keys = Convert.ToString(row.Cells[1].Value);
+            result.repeatKeys = Convert.ToInt32(row.Cells[2].Value);
+            result.delay = Convert.ToInt32(row.Cells[3].Value);
+            result.repeat = Convert.ToInt32(row.Cells[4].Value);
+            return result;
+        }
+
+        private void UpdateLogic(object sender, System.EventArgs e)
+        {
+            if (isRunning && isRunning != dirtyIsRunning)
+            {
+                ResetUpdateStates();
+                runningWindow = selectedWindow;
+            }
+            dirtyIsRunning = isRunning;
+
+            if (!isRunning)
+                return;
+            
+            var keyDataEntry = GetKeyDataEntry(currentIndex);
+            if (runningWindow != null && keyDataEntry != null)
+            {
+                SetForegroundWindow(runningWindow.Process.Handle);
+                if (!keyDataEntry.enabled)
+                {
+                    IncreaseUpdateIndex();
+                    return;
+                }
+                if (repeatKeysCount < keyDataEntry.repeatKeys)
+                {
+                    ++repeatKeysCount;
+                    SendKeys.Send(keyDataEntry.keys);
+                    Console.WriteLine("Send Keys " + keyDataEntry.keys + " count " + repeatKeysCount);
+                }
+                else
+                {
+                    var currentTicks = DateTime.Now.Ticks;
+                    if (!startDelayCount)
+                    {
+                        delayStartTime = currentTicks;
+                        startDelayCount = true;
+                        Console.WriteLine("Starting delay at " + delayStartTime);
+                        return;
+                    }
+                    var differenceTicks = currentTicks - delayStartTime;
+                    if (differenceTicks / TimeSpan.TicksPerSecond >= keyDataEntry.delay)
+                    {
+                        Console.WriteLine("Delay ended at " + currentTicks + " difference ticks " + differenceTicks);
+                        ++repeatCount;
+                        if (repeatCount >= keyDataEntry.repeat)
+                        {
+                            Console.WriteLine("Repeated " + repeatCount);
+                            IncreaseUpdateIndex();
+                        }
+                    }
+                }
+            }
         }
 
         private void UpdateWindowsList()
@@ -48,7 +153,7 @@ namespace CSharpAutokeyboard
 
         private void tmrRefreshWindowList_Tick(object sender, EventArgs e)
         {
-            this.UpdateWindowsList();
+            UpdateWindowsList();
         }
 
         private void lstWindows_SelectedIndexChanged(object sender, EventArgs e)
@@ -56,21 +161,46 @@ namespace CSharpAutokeyboard
             if (lstWindows.SelectedIndex < 0 || windowList == null)
                 return;
 
-            var selectedWindow = windowList[lstWindows.SelectedIndex];
+            selectedWindow = windowList[lstWindows.SelectedIndex];
+        }
+
+        private void gvKeyList_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            e.Control.KeyPress -= new KeyPressEventHandler(IntegerColumn_KeyPress);
+            if (gvKeyList.CurrentCell.ColumnIndex == 2 ||   // Repeat Keys
+                gvKeyList.CurrentCell.ColumnIndex == 3 ||   // Delay
+                gvKeyList.CurrentCell.ColumnIndex == 4      // Repeat
+                )
+            {
+                TextBox tb = e.Control as TextBox;
+                if (tb != null)
+                {
+                    tb.KeyPress += new KeyPressEventHandler(IntegerColumn_KeyPress);
+                }
+            }
+        }
+
+        private void IntegerColumn_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-
+            isRunning = true;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-
+            isRunning = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            List<KeyDataEntry> entries = new List<KeyDataEntry>();
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Title = "Save Data File";
             fileDialog.Filter = "AUTOKEYS files|*.autokeys";
@@ -79,13 +209,20 @@ namespace CSharpAutokeyboard
             {
                 try
                 {
-                    StreamWriter writer = new StreamWriter(fileDialog.OpenFile());
-                    foreach (var row in gvKeyList.Rows)
+                    // Don't add last empty row
+                    for (var i = 0; i < gvKeyList.RowCount - 1; ++i)
                     {
-                        Console.WriteLine("row " + row.ToString());
+                        var row = gvKeyList.Rows[i];
+                        var newEntry = new KeyDataEntry();
+                        newEntry.enabled = Convert.ToBoolean(row.Cells[0].Value);
+                        newEntry.keys = Convert.ToString(row.Cells[1].Value);
+                        newEntry.repeatKeys = Convert.ToInt32(row.Cells[2].Value);
+                        newEntry.delay = Convert.ToInt32(row.Cells[3].Value);
+                        newEntry.repeat = Convert.ToInt32(row.Cells[4].Value);
+                        entries.Add(newEntry);
                     }
-                    writer.Dispose();
-                    writer.Close();
+                    var json = JsonMapper.ToJson(entries);
+                    File.WriteAllText(fileDialog.FileName, json);
                 }
                 catch (Exception ex)
                 {
@@ -96,7 +233,6 @@ namespace CSharpAutokeyboard
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            Stream stream = null;
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Title = "Open Data File";
             fileDialog.Filter = "AUTOKEYS files|*.autokeys";
@@ -105,12 +241,16 @@ namespace CSharpAutokeyboard
             {
                 try
                 {
-                    if ((stream = fileDialog.OpenFile()) != null)
+                    var json = File.ReadAllText(fileDialog.FileName);
+                    var entries = JsonMapper.ToObject<List<KeyDataEntry>>(json);
+                    foreach (var entry in entries)
                     {
-                        using (stream)
-                        {
-                            // Insert code to read the stream here.
-                        }
+                        var newData = new DataGridViewRow();
+                        gvKeyList.Rows.Add(entry.enabled, 
+                            entry.keys, 
+                            entry.repeatKeys.ToString(), 
+                            entry.delay.ToString(),
+                            entry.repeat.ToString());
                     }
                 }
                 catch (Exception ex)

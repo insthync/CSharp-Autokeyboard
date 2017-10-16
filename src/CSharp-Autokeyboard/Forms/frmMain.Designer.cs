@@ -38,7 +38,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.gvKeyList = new System.Windows.Forms.DataGridView();
-            this.apply = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.enabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.keys = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.repeatKeys = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.delay = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,14 +53,14 @@
             this.lstWindows.FormattingEnabled = true;
             this.lstWindows.Location = new System.Drawing.Point(13, 12);
             this.lstWindows.Name = "lstWindows";
-            this.lstWindows.Size = new System.Drawing.Size(613, 69);
+            this.lstWindows.Size = new System.Drawing.Size(559, 69);
             this.lstWindows.TabIndex = 0;
             this.lstWindows.SelectedIndexChanged += new System.EventHandler(this.lstWindows_SelectedIndexChanged);
             // 
             // btnRefresh
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Location = new System.Drawing.Point(551, 87);
+            this.btnRefresh.Location = new System.Drawing.Point(497, 87);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 1;
@@ -100,7 +100,7 @@
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 4;
-            this.btnSave.Text = "Save Keys";
+            this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -110,7 +110,7 @@
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 5;
-            this.btnLoad.Text = "Load Keys";
+            this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
@@ -121,20 +121,22 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gvKeyList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvKeyList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.apply,
+            this.enabled,
             this.keys,
             this.repeatKeys,
             this.delay,
             this.repeat});
             this.gvKeyList.Location = new System.Drawing.Point(14, 117);
             this.gvKeyList.Name = "gvKeyList";
-            this.gvKeyList.Size = new System.Drawing.Size(612, 136);
+            this.gvKeyList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gvKeyList.Size = new System.Drawing.Size(558, 432);
             this.gvKeyList.TabIndex = 6;
+            this.gvKeyList.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.gvKeyList_EditingControlShowing);
             // 
-            // apply
+            // enabled
             // 
-            this.apply.HeaderText = "Apply?";
-            this.apply.Name = "apply";
+            this.enabled.HeaderText = "Enabled?";
+            this.enabled.Name = "enabled";
             // 
             // keys
             // 
@@ -160,7 +162,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 265);
+            this.ClientSize = new System.Drawing.Size(584, 561);
             this.Controls.Add(this.gvKeyList);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnSave);
@@ -188,7 +190,7 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.DataGridView gvKeyList;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn apply;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn enabled;
         private System.Windows.Forms.DataGridViewTextBoxColumn keys;
         private System.Windows.Forms.DataGridViewTextBoxColumn repeatKeys;
         private System.Windows.Forms.DataGridViewTextBoxColumn delay;
