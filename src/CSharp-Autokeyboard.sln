@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app_window_title_changer", "app_window_title_changer\app_window_title_changer.csproj", "{136651BB-301D-4FBC-A099-14C8566AE5D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp-Autokeyboard", "app_window_title_changer\CSharp-Autokeyboard.csproj", "{136651BB-301D-4FBC-A099-14C8566AE5D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

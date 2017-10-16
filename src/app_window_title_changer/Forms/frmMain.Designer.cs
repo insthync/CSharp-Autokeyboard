@@ -48,11 +48,10 @@
             // 
             // lstWindows
             // 
-            this.lstWindows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lstWindows.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstWindows.FormattingEnabled = true;
-            this.lstWindows.Location = new System.Drawing.Point(12, 12);
+            this.lstWindows.Location = new System.Drawing.Point(13, 12);
             this.lstWindows.Name = "lstWindows";
             this.lstWindows.Size = new System.Drawing.Size(613, 69);
             this.lstWindows.TabIndex = 0;
@@ -60,8 +59,8 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Location = new System.Drawing.Point(550, 87);
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.Location = new System.Drawing.Point(551, 87);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 1;
@@ -77,7 +76,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(13, 87);
+            this.btnStart.Location = new System.Drawing.Point(12, 87);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 2;
@@ -117,6 +116,9 @@
             // 
             // gvKeyList
             // 
+            this.gvKeyList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gvKeyList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvKeyList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.apply,
@@ -124,7 +126,7 @@
             this.repeatKeys,
             this.delay,
             this.repeat});
-            this.gvKeyList.Location = new System.Drawing.Point(13, 117);
+            this.gvKeyList.Location = new System.Drawing.Point(14, 117);
             this.gvKeyList.Name = "gvKeyList";
             this.gvKeyList.Size = new System.Drawing.Size(612, 136);
             this.gvKeyList.TabIndex = 6;
@@ -169,7 +171,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "frmMain";
-            this.Text = "Application Windows Title Changer";
+            this.Text = "Auto Keyboard";
             this.Load += new System.EventHandler(this.frmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gvKeyList)).EndInit();
             this.ResumeLayout(false);

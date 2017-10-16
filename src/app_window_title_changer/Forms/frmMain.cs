@@ -80,6 +80,10 @@ namespace CSharpAutokeyboard
                 try
                 {
                     StreamWriter writer = new StreamWriter(fileDialog.OpenFile());
+                    foreach (var row in gvKeyList.Rows)
+                    {
+                        Console.WriteLine("row " + row.ToString());
+                    }
                     writer.Dispose();
                     writer.Close();
                 }
