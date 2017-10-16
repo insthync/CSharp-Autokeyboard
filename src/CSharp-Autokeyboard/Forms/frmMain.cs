@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using LitJson;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Collections.ObjectModel;
 
 namespace CSharpAutokeyboard
 {
@@ -19,6 +18,8 @@ namespace CSharpAutokeyboard
         private const int WM_SETTEXT = 0x000C;
         [DllImport("User32.dll")]
         private static extern Int32 SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         private List<Window> windowList = null;
         private Window selectedWindow = null;
@@ -42,6 +43,7 @@ namespace CSharpAutokeyboard
 
         private void ResetUpdateStates()
         {
+            runningWindow = null;
             currentIndex = 0;
             repeatKeysCount = 0;
             startDelayCount = false;
@@ -90,8 +92,14 @@ namespace CSharpAutokeyboard
             if (!isRunning)
                 return;
 
+            if (runningWindow == null)
+            {
+                isRunning = false;
+                return;
+            }
+
             var keyDataEntry = GetKeyDataEntry(currentIndex);
-            if (runningWindow != null && keyDataEntry != null)
+            if (keyDataEntry != null)
             {
                 if (!keyDataEntry.enabled)
                 {
@@ -101,7 +109,14 @@ namespace CSharpAutokeyboard
                 if (repeatKeysCount < keyDataEntry.repeatKeys)
                 {
                     ++repeatKeysCount;
-                    SendMessage(runningWindow.MainWindowHandle, WM_SETTEXT, IntPtr.Zero, new StringBuilder(keyDataEntry.keys));
+                    IntPtr windowPtr = runningWindow.MainWindowHandle;
+                    if (runningWindow.MainWindowHandle == IntPtr.Zero)
+                    {
+                        isRunning = false;
+                        return;
+                    }
+                    SetForegroundWindow(windowPtr);
+                    SendKeys.Send(keyDataEntry.keys);
                     Console.WriteLine("Send Keys " + keyDataEntry.keys + " count " + repeatKeysCount);
                 }
                 else
@@ -154,7 +169,7 @@ namespace CSharpAutokeyboard
             }
 
             lstWindows.DataSource = windowList;
-            lstWindows.DisplayMember = "MainWindowTitle";
+            lstWindows.DisplayMember = "ListTitle";
             lstWindows.SelectedIndex = selectedIndex;
             this.windowList = windowList;
         }

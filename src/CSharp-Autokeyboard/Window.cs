@@ -16,7 +16,7 @@ namespace CSharpAutokeyboard
         {
             get
             {
-                return this.Process.MainWindowHandle;
+                return Process.MainWindowHandle;
             }
         }
 
@@ -24,27 +24,38 @@ namespace CSharpAutokeyboard
         {
             get
             {
-                if(this.Process.MainWindowHandle == IntPtr.Zero)
+                if (Process.MainWindowHandle == IntPtr.Zero)
                     return null;
 
-                return this.Process.MainWindowTitle;
+                return Process.MainWindowTitle;
+            }
+        }
+
+        public string ListTitle
+        {
+            get
+            {
+                if (Process.MainWindowHandle == IntPtr.Zero)
+                    return null;
+
+                return Process.MainWindowTitle + " - " + Process.Id;
             }
         }
 
         public Window(Process proc)
         {
-            this.Process = proc;
+            Process = proc;
         }
 
         public bool SetTitle(string title)
         {
-            if(string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(title))
                 return false;
 
-            if(this.MainWindowHandle == IntPtr.Zero)
+            if (MainWindowHandle == IntPtr.Zero)
                 return false;
 
-            bool result = Window.SetWindowText(this.MainWindowHandle, title);
+            bool result = SetWindowText(MainWindowHandle, title);
             return result;
         }
     }
