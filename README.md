@@ -6,7 +6,7 @@ A Simple auto keyboard which will focus on selected application then add input a
 - enabled? : if you are not checked, this row will not run
 - keys: inputs you want to send to selected application
 - flood: time to flushes inputs
-- delay: delay before next input
+- delay: delay in milliseconds before next input
 - repeat: input repeat
 
 ##Another keys
