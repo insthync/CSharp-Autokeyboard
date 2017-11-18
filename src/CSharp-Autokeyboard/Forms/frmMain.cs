@@ -15,11 +15,12 @@ namespace CSharpAutokeyboard
         // Refs
         // https://msdn.microsoft.com/en-us/library/ms644950(VS.85).aspx
         // 
-        private const int WM_SETTEXT = 0x000C;
-        [DllImport("User32.dll")]
-        private static extern Int32 SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
         [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
         private List<Window> windowList = null;
         private Window selectedWindow = null;
@@ -115,8 +116,9 @@ namespace CSharpAutokeyboard
                         isRunning = false;
                         return;
                     }
-                    SetForegroundWindow(windowPtr);
-                    SendKeys.Send(keyDataEntry.keys);
+                    //SetForegroundWindow(windowPtr);
+                    //SendKeys.Send(keyDataEntry.keys);
+                    SendInputs.SendKeys(windowPtr, keyDataEntry.keys);
                     Console.WriteLine("Send Keys " + keyDataEntry.keys + " count " + repeatKeysCount);
                 }
                 else
